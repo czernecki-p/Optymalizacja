@@ -1,5 +1,11 @@
 #include"user_funs.h"
 
+matrix ff0T(matrix x, matrix ud1, matrix ud2)
+{
+	matrix y;
+	y = pow(x(0) - ud1(0), 2) + pow(x(1) - ud1(1), 2);
+	return y;
+}
 
 matrix ff0R(matrix x, matrix ud1, matrix ud2)
 {
