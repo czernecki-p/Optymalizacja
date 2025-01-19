@@ -138,9 +138,55 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 {
 	try
 	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
+		solution Xopt, A{a}, B{b}, C{(a+b)/2}, D{}, D_prev{0};
+		matrix l{}, m{};
+		matrix x = A.x - B.x;
+		double y = A.x() - B.x();
+		
+		do {
+			if(solution::f_calls > Nmax) {
+				Xopt.flag = 1;
+				throw std::range_error(" iter > Nmax ");
+				return Xopt;
+			}
+			A.fit_fun(ff, ud1, ud2);
+			B.fit_fun(ff, ud1, ud2);
+			C.fit_fun(ff, ud1, ud2);
+			l = A.y * (pow(B.x,2) - pow(C.x, 2)) + B.y * (pow(C.x,2) - pow(A.x,2)) - pow(A.x,2) + C.y*(pow(A.x,2) - pow(B.x,2));
+			m = A.y*(B.x - C.x) + B.y*(C.x - A.x) + C.y*(A.x - B.x);
+			if (m <= 0){
+				Xopt.flag = 2;
+				printf(" m <= 0 ");
+				return Xopt;
+			}
+			D.x = 0.5 * l / m;
+			D.fit_fun(ff, ud1, ud2);
+			printf("\nit:%f\tA(%f, %f)\tB(%f,%f)\tC(%f,%f),D(%f,%f)", solution::f_calls, A.x(), A.y(), B.x(), B.y(), C.x(), C.y(), D.x(), D.y());
+			if(A.x < C.x && D.x < C.x){
+				if(D.y < C.y) {
+					C = D;
+					B = C;
+				} else {
+					A = D;
+				}
+			} else if (C.x < B.x && D.x < B.x) {
+				if(D.y < C.y) {
+					A = C;
+					C = D;
+				} else {
+					B = D;
+				}
+			} else {
+				Xopt.flag = 2;
+				return Xopt;
+			}
+		D_prev.x = D.x;
+		}while(B.y - A.y < epsilon || abs(D.y()-D_prev.y()) < gamma);
 
+		Xopt.x = D_prev.x;
+		Xopt.fit_fun(ff, ud1, ud2);
+
+		printf("\nmin: %f dla %f", Xopt.y(), Xopt.x());
 		return Xopt;
 	}
 	catch (string ex_info)
