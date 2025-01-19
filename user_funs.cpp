@@ -1,5 +1,7 @@
 #include"user_funs.h"
 
+const double PI = 3.141592653589;
+
 matrix ff0T(matrix x, matrix ud1, matrix ud2)
 {
 	matrix y;
@@ -32,7 +34,7 @@ matrix df0(double t, matrix Y, matrix ud1, matrix ud2)
 	dY(1) = ((t <= ud2(1))*ud2(0) - m*g*l*sin(Y(0)) - b*Y(1)) / I;
 	return dY;
 }
-matrix ff1_real(double t, matrix Y, matrix ud1, matrix ud2) {
+matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
     double a = 0.98;
     double b = 0.63;
     double g = 9.81;
@@ -58,4 +60,13 @@ matrix ff1_real(double t, matrix Y, matrix ud1, matrix ud2) {
     dY(0) = dV_A_dt; dY(1) = dV_B_dt; dY(2) = dT_B_dt;
 
     return dY;
+}
+
+matrix ff1T(matrix x, matrix ud1, matrix ud2){
+	matrix y = -cos(0.1 * x(0)) * exp(-pow((0.1 * x(0) - 2 * PI), 2)) + 0.002 * pow((0.1 * x(0)), 2);
+	return y;
+}
+
+matrix ff1R(matrix x, matrix ud1, matrix ud2) {
+	
 }
