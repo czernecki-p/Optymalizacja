@@ -109,7 +109,7 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
                 fd = fc;
                 c_i = b_i - ((double)fib[i - 1] / fib[i]) * (b_i - a_i);
                 c_mat = matrix(1,1,c_i);
-                fc = ff(c_mat, ud1, ud2);
+                fc = ff(c_mat, ud1, ud2); Xopt.f_calls++;
             }
             else {
                 a_i = c_i;
@@ -117,7 +117,7 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
                 fc = fd;
                 d_i = a_i + ((double)fib[i -1] / fib[i]) * (b_i - a_i);
                 d_mat = matrix(1,1, d_i);
-                fd = ff(d_mat, ud1, ud2);
+                fd = ff(d_mat, ud1, ud2); Xopt.f_calls++;
             }
         }
         double x_opt = (a_i + b_i) / 2;
