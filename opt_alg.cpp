@@ -31,19 +31,55 @@ solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, do
 }
 
 
-double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
-{
-	try
-	{
-		double* p = new double[2]{ 0,0 };
-		//Tu wpisz kod funkcji
+double* expansion(matrix(ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2){
+    try{
+        double *p = new double[2] {0,0};
+        solution X0{x0}, X1 {x0 + d}, X2{};
 
-		return p;
-	}
-	catch (string ex_info)
-	{
-		throw ("double* expansion(...):\n" + ex_info);
-	}
+        X0.fit_fun(ff,ud1, ud2);
+        X1.fit_fun(ff,ud1, ud2);
+
+        if (X0.y() == X1.y()) {
+            p[0] = x0, p[1] = x0+d;
+            return p;
+        }
+        if (X0.y() < X1.y()) {
+            d = -d;
+            X1.x=x0+d;
+            X1.fit_fun(ff,ud1, ud2);
+            if (X0.y() <= X1.y) {
+                p[0] = X1.x(), p[1] = x0-d;
+                return p;
+            }
+        }
+        int i = 0;
+        bool loop = true;
+        while(loop){
+            if(solution::f_calls > Nmax) {
+                X1.flag = 1;
+                throw std::range_error(" iter > Nmax ");
+            } else {
+                ++i;
+                X2.x = x0 + pow(alpha,i) * d;
+                X2.fit_fun(ff, ud1, ud2);
+                if (X1.y() <= X2.y()) {
+                    loop = false;
+                } else {
+                    X0 = X1, X1 = X2;
+                }
+            }
+        }
+        if ( d > 0) {
+            p[0] = X0.x(), p[1] = X2.x();
+        } else {
+            p[0] = X2.x(), p[1] = X0.x();
+        }
+        return p;
+    }
+    catch (string ex_info)
+    {
+        throw ("double* expansion(...):\n" + ex_info);
+    }
 }
 
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
