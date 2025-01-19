@@ -68,5 +68,22 @@ matrix ff1T(matrix x, matrix ud1, matrix ud2){
 }
 
 matrix ff1R(matrix x, matrix ud1, matrix ud2) {
-	
+	matrix Y0(3, new double[3] {5.0, 1.0, 10.0});
+
+	double t_start = 0.0, t_end = 1000.0, dt = 1.0;
+	matrix* results = solve_ode(df1, t_start, dt, t_end, Y0, ud1, x);
+
+	matrix time = results[0];
+	matrix states = results[1];
+
+	int num_points = get_len(time);
+	double max_T_B = states(0, 2);
+	for (int i = 1; i < num_points;++i) {
+		max_T_B = std::max(max_T_B, states(i, 2));
+	}
+	matrix result(1, 1);
+	result(0, 0) = abs(max_T_B - 50.0);
+
+	delete[]results;
+	return result;
 }
