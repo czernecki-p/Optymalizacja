@@ -67,12 +67,46 @@ void lab0()
 
 void lab1()
 {
-	
+	// Parametry
+    double a = -100, b = 100;
+    double epsilon = 1e-3, gamma = 1e-3;
+    int Nmax = 1000;
+    double alpha = 2.0, d = 1.0;
+
+    // Wartości optymalizacji
+    matrix ud1, ud2;
+
+    // Funkcja testowa
+    double* bounds = expansion(ff1T, 0.0, d, alpha, Nmax, ud1, ud2);
+    solution fib_opt = fib(ff1T, bounds[0], bounds[1], epsilon, ud1, ud2);
+    solution lag_opt = lag(ff1T, bounds[0], bounds[1], epsilon, gamma, Nmax, ud1, ud2);
+
+    cout << "Wyniki optymalizacji funkcji testowej:" << endl;
+    cout << "Metoda Fibonacciego: " << fib_opt << endl;
+    cout << "Metoda Lagrange'a: " << lag_opt << endl;
+
+    delete[] bounds;
 }
 
 void lab2()
 {
+// Parametry
+double a = 1, b = 100;
+double epsilon = 1e-3, gamma = 1e-3;
+int Nmax = 2000;
 
+// Problem rzeczywisty
+matrix ud1, ud2;
+double* bounds = expansion(ff0R, 50.0, 1.0, 2.0, Nmax, ud1, ud2);
+
+solution fib_opt = fib(ff0R, bounds[0], bounds[1], epsilon, ud1, ud2);
+solution lag_opt = lag(ff0R, bounds[0], bounds[1], epsilon, gamma, Nmax, ud1, ud2);
+
+cout << "Wyniki optymalizacji problemu rzeczywistego:" << endl;
+cout << "Metoda Fibonacciego: " << fib_opt << endl;
+cout << "Metoda Lagrange'a: " << lag_opt << endl;
+
+delete[] bounds;
 }
 
 void lab3()
